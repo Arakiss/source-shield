@@ -1,7 +1,6 @@
+import { Glob } from 'bun';
 import fs from 'fs';
 import path from 'path';
-import { promisify } from 'util';
-import micromatch from 'micromatch';
 
 export interface CopyrightNoticeOptions
 {
@@ -56,19 +55,21 @@ ${commentStyle.end}`;
 
 async function getAllFiles(dir: string, excludedPatterns: string[]): Promise<string[]>
 {
-    const readDir = promisify(fs.readdir);
+    const glob = new Glob("**/*.{js,css,html,ts,tsx}");
+
     let files: string[] = [];
-    const entries = await readDir(dir, { withFileTypes: true });
 
-    for (const entry of entries) {
-        const fullPath = path.join(dir, entry.name);
-        const relativePath = path.relative(process.cwd(), fullPath);
-
-        if (entry.isDirectory()) {
-            if (micromatch.isMatch(relativePath, excludedPatterns)) continue;
-            files = files.concat(await getAllFiles(fullPath, excludedPatterns));
-        } else if (entry.isFile() && !micromatch.isMatch(relativePath, excludedPatterns)) {
-            files.push(fullPath);
+    for await (const file of glob.scan(dir)) {
+        let isExcluded = false;
+        for (const pattern of excludedPatterns) {
+            const excludeGlob = new Glob(pattern);
+            if (excludeGlob.match(file)) {
+                isExcluded = true;
+                break;
+            }
+        }
+        if (!isExcluded) {
+            files.push(file);
         }
     }
 
@@ -86,15 +87,16 @@ export async function main(argv: CopyrightNoticeOptions)
         'node_modules/**', '.pnp/**', '.pnp.js', 'coverage/**', '.next/**',
         'out/**', 'build/**', '.DS_Store', '*.pem', 'npm-debug.log*',
         'yarn-debug.log*', 'yarn-error.log*', '.env*.local', '.vercel/**',
-        '*.tsbuildinfo', 'next-env.d.ts', '**/*.json',
+        '*.tsbuildinfo', 'next-env.d.ts', '**/*.json', '**/*.d.ts',
     ];
 
-    const baseDir = __dirname;
+
+    const baseDir = process.cwd();
     const files = await getAllFiles(baseDir, excludedPatterns);
 
     files.forEach((file) =>
     {
-        const extname = path.extname(file).toLowerCase();
+        const extname = path.extname(file);
         const commentStyle = COMMENT_STYLES[extname];
         if (commentStyle) {
             const copyrightNotice = DEFAULT_COPYRIGHT_NOTICE(argv, commentStyle);
@@ -116,4 +118,3 @@ function addCopyrightNotice(filePath: string, copyrightNotice: string, fullName:
     fs.writeFileSync(filePath, newContent, 'utf-8');
     console.log(`✅ Copyright notice added to ${filePath}.`);
 }
-
