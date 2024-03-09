@@ -3,9 +3,15 @@
   "module": "src/index.ts",
   "type": "module",
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "@types/micromatch": "^4.0.6",
+    "@types/minimist": "^1.2.5"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "micromatch": "^4.0.5",
+    "minimist": "^1.2.8"
   }
 }
