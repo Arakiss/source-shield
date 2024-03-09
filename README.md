@@ -2,7 +2,7 @@
 
 ## Overview
 
-Source Shield is a TypeScript-based tool designed to automatically add copyright notices to your source files. Utilizing the power and speed of Bun, Source Shield ensures your intellectual property is protected with minimal effort on your part. Ideal for developers and organizations looking to safeguard their work, this tool seamlessly integrates into your development workflow, providing peace of mind through automated copyright management.
+Source Shield is a TypeScript-based tool designed to automatically add copyright notices to your source files. Built exclusively on Bun's native APIs, Source Shield ensures your intellectual property is protected with minimal effort on your part. Ideal for developers and organizations looking to safeguard their work, this tool seamlessly integrates into your development workflow, providing peace of mind through automated copyright management.
 
 ## Features
 
@@ -10,7 +10,7 @@ Source Shield is a TypeScript-based tool designed to automatically add copyright
 - **Smart Recognition**: Identifies files that already contain copyright notices, preventing duplicate entries.
 - **Customizable Notices**: Easily configure copyright notices with your own information.
 - **Support for Multiple File Types**: Works with `.js`, `.ts`, `.tsx`, `.css`, and `.html` files.
-- **Bun Integration**: Leverages Bun for fast and efficient file processing.
+- **100% Bun Compatible**: Leverages Bun's fast and efficient file processing for optimal performance.
 - **CLI Support**: Use it directly from your terminal, integrating seamlessly into your build process.
 
 ## Getting Started
